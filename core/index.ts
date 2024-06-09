@@ -1,23 +1,15 @@
-import { ConfigOption, StatData, SendFlag } from "../types";
-
 const initConfig: Partial<ConfigOption> = {
     delay: {
         max: 100,
         time: 3000,
         timeout: 10000
     },
-    sendType: 'xhr'
+    sendType: 'xhr',
+    fullBurry: true
 };
 
 export default class Xstat {
-    config: Partial<ConfigOption> = {
-        delay: {
-            max: 100,
-            time: 3000,
-            timeout: 10000
-        },
-        sendType: 'xhr'
-    }
+    config: Partial<ConfigOption> = {}
     data: StatData[] = []
     constructor() {
 
@@ -26,6 +18,9 @@ export default class Xstat {
     public init(config?: ConfigOption) {
         this.config = config || initConfig;
         console.log('init', this.config);
+        if (this.config.fullBurry) {
+            this.burry(true);
+        }
     }
 
     // 发送数据
@@ -37,7 +32,7 @@ export default class Xstat {
         console.log('send batch', this.data);
     }
 
-    // 埋点
+    // 插入数据
     public push(obj, sendFlag: SendFlag) {
         if (sendFlag === 'cache') {
             this.data.push(obj);
@@ -45,5 +40,14 @@ export default class Xstat {
             return;
         }
         this.send();
+    }
+
+    // 埋点
+    public burry(full?: boolean) {
+        if (full) {
+            window.addEventListener('click', (e: Event) => {
+                console.log('click', e);
+            })
+        }
     }
 }

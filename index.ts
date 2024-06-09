@@ -1,3 +1,4 @@
 
 import Xstat from './core/index';
-(window as any).Xstat = new Xstat();
+(window as any).Xstat = Xstat;
+export default new Xstat();

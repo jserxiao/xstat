@@ -1,6 +1,6 @@
 {
   "name": "x-stat",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "",
   "main": "dist/x-stat.js",
   "types": "dist/x-stat.d.ts",
