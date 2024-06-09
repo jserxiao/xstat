@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "typeRoots": ["./types/index.d.ts"],
+    "moduleResolution": "node",
+    // "target": "ES2020",
+    // "useDefineForClassFields": true,
+    // "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    // "declaration": true,
+    // "declarationDir": "./types/index.d.ts"
+  },
+  "include": ["./index.ts", "./types/index.d.ts", "./core/*.ts"],
+  "exclude": ["node_modules"]
+}
