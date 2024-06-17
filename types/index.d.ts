@@ -12,9 +12,10 @@ declare interface ConfigOption {
 }
 
 declare interface StatData {
-    type: 'error' | 'action' | 'view';
+    type: 'error' | 'staticError' | 'jsError' | 'promiseError' | 'action' | 'view';
     time: number;
     value: any;
+    url?: string;
 }
 
 declare type SendFlag = 'cache' | 'immediate';
