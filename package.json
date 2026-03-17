@@ -1,6 +1,6 @@
 {
   "name": "@jserxiao/xstat",
-  "version": "1.0.5",
+  "version": "1.0.1",
   "description": "A comprehensive frontend monitoring SDK with error tracking, performance monitoring, and user behavior analytics",
   "main": "dist/xstat.cjs",
   "module": "dist/xstat.js",
@@ -43,7 +43,7 @@
     "sdk",
     "typescript"
   ],
-  "author": "",
+  "author": "jserxiao",
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-babel": "^6.0.4",
