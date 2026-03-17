@@ -1,60 +1,132 @@
-import typescript from "@rollup/plugin-typescript";
+import typescript from '@rollup/plugin-typescript';
 import ts2 from 'rollup-plugin-typescript2';
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import strip from "@rollup/plugin-strip";
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import strip from '@rollup/plugin-strip';
 import json from '@rollup/plugin-json';
-import pkg from './package.json' assert {type: 'json'};
-import externals from 'rollup-plugin-node-externals';
+import terser from '@rollup/plugin-terser';
 import cleanup from 'rollup-plugin-cleanup';
 import del from 'rollup-plugin-delete';
-import babel from "@rollup/plugin-babel";
-import terser from '@rollup/plugin-terser';
-import {dts} from 'rollup-plugin-dts';
+import { dts } from 'rollup-plugin-dts';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
+
+// 获取安全的文件名（移除 @scope/ 前缀中的特殊字符）
+const safeName = pkg.name.replace(/^@[^/]+\//, '').replace(/[@/]/g, '-');
+
+const banner = `/*!
+ * ${pkg.name} v${pkg.version}
+ * ${pkg.description}
+ * (c) ${new Date().getFullYear()}
+ * @license MIT
+ */`;
 
 export default [
+    // ESM build
     {
         input: 'index.ts',
-        output: [
-            {
-                format: 'es',
-                file: `dist/${pkg.name}.js`,
-                name: pkg.name,
-            },{
-                format: 'cjs',
-                file: `dist/${pkg.name}.cjs`,
-                name: pkg.name,
-            },
-            ,{
-                format: 'umd',
-                name: pkg.name,
-                file: `dist/${pkg.name}.mjs`,
-            },
-        ],
-        external: ["lodash"],
+        output: {
+            file: `dist/${safeName}.js`,
+            format: 'es',
+            banner,
+            sourcemap: true,
+        },
+        external: [],
         plugins: [
-            del({
-                targets: 'dist/*'
-            }),
+            del({ targets: 'dist/*' }),
             cleanup(),
-            ts2(),
-            strip(),
-            commonjs(),
-            resolve(),
-            // typescript(),
-            json(),
-            babel({
-                exclude: 'node_modules/**', // 防止打包node_modules下的文件
+            ts2({
+                tsconfig: './tsconfig.json',
+                useTsconfigDeclarationDir: true,
             }),
-            terser(),
-            externals({
-                devDeps: false
-            })
-        ]
+            strip({
+                functions: ['console.log', 'console.debug'],
+            }),
+            resolve(),
+            commonjs(),
+            json(),
+        ],
     },
+    // CJS build
+    {
+        input: 'index.ts',
+        output: {
+            file: `dist/${safeName}.cjs`,
+            format: 'cjs',
+            banner,
+            sourcemap: true,
+            exports: 'named',
+        },
+        external: [],
+        plugins: [
+            ts2({
+                tsconfig: './tsconfig.json',
+            }),
+            strip({
+                functions: ['console.log', 'console.debug'],
+            }),
+            resolve(),
+            commonjs(),
+            json(),
+        ],
+    },
+    // UMD build (minified)
+    {
+        input: 'index.ts',
+        output: {
+            file: `dist/${safeName}.min.js`,
+            format: 'umd',
+            name: 'XStat',
+            banner,
+            sourcemap: true,
+        },
+        plugins: [
+            ts2({
+                tsconfig: './tsconfig.json',
+            }),
+            strip({
+                functions: ['console.log', 'console.debug'],
+            }),
+            resolve(),
+            commonjs(),
+            json(),
+            terser({
+                format: {
+                    comments: /^!/,
+                },
+            }),
+        ],
+    },
+    // IIFE build (for direct script tag)
+    {
+        input: 'index.ts',
+        output: {
+            file: `dist/${safeName}.iife.js`,
+            format: 'iife',
+            name: 'XStat',
+            banner,
+            sourcemap: true,
+        },
+        plugins: [
+            ts2({
+                tsconfig: './tsconfig.json',
+            }),
+            strip({
+                functions: ['console.log', 'console.debug'],
+            }),
+            resolve(),
+            commonjs(),
+            json(),
+        ],
+    },
+    // Type declarations
     {
         input: 'types/index.d.ts',
-        output: { file: `dist/${pkg.name}.d.ts`, format: "es" },
-        plugins: [dts(),resolve()]
-    }
-]
+        output: {
+            file: `dist/${safeName}.d.ts`,
+            format: 'es',
+        },
+        plugins: [dts()],
+    },
+];
