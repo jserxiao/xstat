@@ -1,6 +1,6 @@
 {
   "name": "x-stat",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A comprehensive frontend monitoring SDK with error tracking, performance monitoring, and user behavior analytics",
   "main": "dist/x-stat.cjs",
   "module": "dist/x-stat.js",
