@@ -1,16 +1,16 @@
 {
   "name": "@jserxiao/xstat",
-  "version": "2.0.6",
+  "version": "1.0.1",
   "description": "A comprehensive frontend monitoring SDK with error tracking, performance monitoring, and user behavior analytics",
-  "main": "dist/x-stat.cjs",
-  "module": "dist/x-stat.js",
-  "types": "dist/x-stat.d.ts",
+  "main": "dist/xstat.cjs",
+  "module": "dist/xstat.js",
+  "types": "dist/xstat.d.ts",
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/x-stat.js",
-      "require": "./dist/x-stat.cjs",
-      "types": "./dist/x-stat.d.ts"
+      "import": "./dist/xstat.js",
+      "require": "./dist/xstat.cjs",
+      "types": "./dist/xstat.d.ts"
     },
     "./core": {
       "import": "./dist/core.js",
